@@ -61,7 +61,10 @@ declare module "@scom/scom-tx-status-modal" {
             message: string;
         };
         txtHash?: string;
-        customRedirect?: any;
+        customRedirect?: {
+            url: string;
+            params: any;
+        };
     }
     interface TxStatusModalElement extends ControlElement {
         networks?: INetwork[] | '*';

@@ -30,7 +30,10 @@ interface IMessage {
     message: string
   },
   txtHash?: string,
-  customRedirect?: any,
+  customRedirect?: {
+    url: string,
+    params: any
+  },
 }
 
 interface TxStatusModalElement extends ControlElement {
@@ -103,13 +106,13 @@ export default class ScomTxStatusModal extends Module {
 
   onCloseRedirect = () => {
     const customRedirect = this.message?.customRedirect;
-    if (customRedirect && customRedirect.name) {
+    if (customRedirect && customRedirect.url) {
       this._message.customRedirect = null;
       if (customRedirect.params) {
         const queries = new URLSearchParams(customRedirect.params).toString();
-        window.location.assign(`/#/${customRedirect.name}?${queries}`);
+        window.location.assign(`${customRedirect.url}?${queries}`);
       } else {
-        window.location.assign(`/#/${customRedirect.name}`);
+        window.location.assign(`${customRedirect.url}`);
       }
     }
   }

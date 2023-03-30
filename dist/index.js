@@ -382,14 +382,14 @@ define("@scom/scom-tx-status-modal", ["require", "exports", "@ijstech/components
             this.onCloseRedirect = () => {
                 var _a;
                 const customRedirect = (_a = this.message) === null || _a === void 0 ? void 0 : _a.customRedirect;
-                if (customRedirect && customRedirect.name) {
+                if (customRedirect && customRedirect.url) {
                     this._message.customRedirect = null;
                     if (customRedirect.params) {
                         const queries = new URLSearchParams(customRedirect.params).toString();
-                        window.location.assign(`/#/${customRedirect.name}?${queries}`);
+                        window.location.assign(`${customRedirect.url}?${queries}`);
                     }
                     else {
-                        window.location.assign(`/#/${customRedirect.name}`);
+                        window.location.assign(`${customRedirect.url}`);
                     }
                 }
             };

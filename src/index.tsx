@@ -10,21 +10,17 @@ import {
   Container,
   Image,
   VStack
-} from '@ijstech/components'
-import { } from '@ijstech/eth-contract'
-import Assets from './assets'
+} from '@ijstech/components';
+import { } from '@ijstech/eth-contract';
+import Assets from './assets';
 import {
-  getNetworkExplorerName,
-  INetwork,
   parseContractError,
-  updateNetworks,
   viewOnExplorerByTxHash,
-} from './store/index'
-import customStyles from './index.css'
-import { Wallet } from '@ijstech/eth-wallet'
+} from './store/index';
+import statusModalStyles from './index.css';
+import { Wallet } from '@ijstech/eth-wallet';
 
 interface IMessage {
-  chainId?: number,
   status: 'warning' | 'success' | 'error',
   content?: string | {
     message: string
@@ -33,19 +29,13 @@ interface IMessage {
   customRedirect?: {
     url: string,
     params: any
-  },
-}
-
-interface TxStatusModalElement extends ControlElement {
-  networks?: INetwork[] | '*',
-  infuraId?: string,
-  chainId?: number
+  }
 }
 
 declare global {
   namespace JSX {
     interface IntrinsicElements {
-      ['i-scom-tx-status-modal']: TxStatusModalElement
+      ['i-scom-tx-status-modal']: ControlElement
     }
   }
 }
@@ -55,7 +45,6 @@ declare global {
 export default class ScomTxStatusModal extends Module {
   private confirmModal: Modal;
   private mainContent: Panel;
-  private _chainId: number;
   private _message: IMessage;
   private _onCustomClose: any;
 
@@ -66,14 +55,6 @@ export default class ScomTxStatusModal extends Module {
   set message(value: IMessage) {
     this._message = value;
     this.renderUI();
-  }
-
-  get chainId(): number {
-    return this._chainId;
-  }
-
-  set chainId(value: number) {
-    this._chainId = value;
   }
 
   get onCustomClose(): any {
@@ -92,7 +73,7 @@ export default class ScomTxStatusModal extends Module {
     }
   }
 
-  constructor(parent?: Container, options?: any) {
+  constructor(parent?: Container, options?: ControlElement) {
     super(parent, options);
   }
 
@@ -119,7 +100,7 @@ export default class ScomTxStatusModal extends Module {
 
   private buildLink = () => {
     if (this.message.txtHash) {
-      const chainId: number = this.chainId || Wallet.getClientInstance().chainId;
+      const chainId: number = Wallet.getClientInstance().chainId;
       viewOnExplorerByTxHash(chainId, this.message.txtHash);
     }
   }
@@ -130,16 +111,15 @@ export default class ScomTxStatusModal extends Module {
       horizontalAlignment: 'center'
     });
     if (this.message.status === 'warning') {
-      mainSection.id = 'warningSection';
       const loading = (
         <i-panel height={100}>
-          <i-vstack id="loadingElm" class="i-loading-overlay" height="100%" background={{ color: "transparent" }}>
+          <i-vstack id="loadingElm" class="i-loading-overlay" height="100%" background={{ color: 'transparent' }}>
             <i-vstack class="i-loading-spinner" horizontalAlignment="center" verticalAlignment="center">
               <i-icon
                 class="i-loading-spinner_icon"
                 image={{ url: Assets.fullPath('img/loading.svg'), width: 24, height: 24 }}
               />
-              <i-label caption="Loading..." font={{ color: '#FD4A4C' }} class="i-loading-spinner_text" />
+              <i-label caption="Loading..." font={{ color: '#FD4A4C' }} class="i-loading-spinner_text"></i-label>
             </i-vstack>
           </i-vstack>
         </i-panel>
@@ -148,11 +128,10 @@ export default class ScomTxStatusModal extends Module {
       const section = new VStack();
       section.margin = { bottom: 20 };
       const captionList = ['Waiting For Confirmation', this.convertContentToMsg(), 'Confirm this transaction in your wallet'];
-      const classList = ['waiting-txt cs-mb', 'cs-mb', 'confirm-txt'];
+      const classList = ['waiting-txt mb-1', 'mb-1', 'confirm-txt'];
       for (let i = 0; i < captionList.length; i++) {
         const caption = captionList[i];
-        const label = await Label.create();
-        label.caption = caption;
+        const label = await Label.create({ caption });
         if (classList[i]) {
           const classes = classList[i].split(' ');
           classes.forEach(className => label.classList.add(className));
@@ -161,65 +140,59 @@ export default class ScomTxStatusModal extends Module {
       };
       mainSection.appendChild(section);
     } else if (this.message.status === 'success') {
-      const chainId: number = this.chainId || Wallet.getClientInstance().chainId;
-      const explorerName = getNetworkExplorerName(chainId);
-
       const image = await Image.create({
         width: '50px',
         url: Assets.fullPath('img/success-icon.svg'),
         display: 'inline-block',
-        margin: { bottom: '1rem' }
+        margin: { bottom: 16 }
       });
       mainSection.appendChild(image);
 
-      const label = await Label.create({
-        caption: 'Transaction Submitted',
-        margin: { bottom: 4 }
-      });
+      const label = await Label.create({ caption: 'Transaction Submitted' });
       label.classList.add('waiting-txt');
       mainSection.appendChild(label);
 
       const contentSection = await Panel.create();
-      contentSection.id = 'contentSection';
       mainSection.appendChild(contentSection);
 
       const contentLabel = await Label.create({
         caption: this.convertContentToMsg(),
-        margin: { bottom: 4 }
+        wordBreak: 'break-all',
+        margin: { top: 2, bottom: 2 }
       });
       contentSection.appendChild(contentLabel);
 
       if (this.message.txtHash) {
         const section = new VStack();
-
         const label1 = await Label.create({
           caption: this.message.txtHash.substr(0, 33),
-          margin: { bottom: 4 }
+          margin: { top: 4 }
         });
         section.appendChild(label1);
 
         const label2 = await Label.create({
           caption: this.message.txtHash.substr(33, this.message.txtHash.length),
-          margin: { bottom: '1rem' }
+          margin: { bottom: 16 }
         });
         section.appendChild(label2);
-        if (explorerName) {
-          const link = await Label.create({
-            caption: `View on ${explorerName}`,
-            display: 'block'
-          });
 
-          link.onClick = this.buildLink.bind(this);
-          link.classList.add('red-link', 'pointer');
-          section.appendChild(link);
-        }
+        const link = await Label.create({
+          caption: 'View on block explorer',
+          display: 'block'
+        });
+
+        link.onClick = () => this.buildLink();
+        link.classList.add('red-link', 'pointer');
+        section.appendChild(link);
         contentSection.appendChild(section);
       }
 
       const button = new Button(mainSection, {
         width: '100%',
         caption: 'Close',
-        margin: { top: '1rem' }
+        margin: { top: 16 },
+        // font: { color: Theme.colors.primary.contrastText }
+        font: { color: '#fff' }
       });
       button.classList.add('btn-os');
       button.onClick = () => this.closeModal();
@@ -229,22 +202,22 @@ export default class ScomTxStatusModal extends Module {
         width: '50px',
         url: Assets.fullPath('img/error-icon.png'),
         display: 'inline-block',
-        margin: { bottom: '1rem' }
+        margin: { bottom: 16 }
       });
       mainSection.appendChild(image);
 
       const label = await Label.create({
         caption: 'Transaction Rejected.',
-        margin: { bottom: '1rem' }
+        margin: { bottom: 16 }
       });
       label.classList.add('waiting-txt');
       mainSection.appendChild(label);
 
       const section = await VStack.create();
-      section.id = 'contentSection';
       const contentLabel = await Label.create({
         caption: this.convertContentToMsg(),
-        margin: { bottom: '1rem' }
+        margin: { bottom: 16 },
+        wordBreak: 'break-all'
       });
       section.appendChild(contentLabel);
       mainSection.appendChild(section);
@@ -252,7 +225,9 @@ export default class ScomTxStatusModal extends Module {
       const button = new Button(mainSection, {
         width: '100%',
         caption: 'Cancel',
-        margin: { top: '1rem' }
+        margin: { top: 16 },
+        // font: { color: Theme.colors.primary.contrastText }
+        font: { color: '#fff' }
       });
       button.classList.add('btn-os');
       button.onClick = () => this.closeModal();
@@ -273,15 +248,8 @@ export default class ScomTxStatusModal extends Module {
   }
 
   init() {
-    this.classList.add(customStyles)
+    this.classList.add(statusModalStyles);
     super.init();
-    const chainId = this.getAttribute('chainId', true);
-    if (chainId) {
-      this.chainId = chainId;
-    }
-    const networks = this.getAttribute('networks', true);
-    const infuraId = this.getAttribute('infuraId', true);
-    updateNetworks({ infuraId, networks });
     this.confirmModal.onClose = () => {
       if (this.onCustomClose) {
         this.onCustomClose();

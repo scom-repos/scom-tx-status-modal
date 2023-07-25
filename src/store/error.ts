@@ -18,6 +18,7 @@ export const parseContractError = (oMessage: string) => {
         'execution reverted: OAXDEX: INVALID_SIGNATURE': 'Invalid signature',
         'execution reverted: OAXDEX: EXPIRED': 'Expired',
         'MetaMask Tx Signature: User denied transaction signature.': 'User denied transaction signature',
+        'Returned error: MetaMask Tx Signature: User denied transaction signature.': 'User denied transaction signature',
         'execution reverted: OracleAdaptor: Price outside allowed range': 'Circuit Breaker: Exceeds Price Protection Range',
         'execution reverted: PAIR_NOT_MATCH': 'Pair Not Match',
         'execution reverted: Cap exceeded': 'Trolls have been sold out',
@@ -25,5 +26,5 @@ export const parseContractError = (oMessage: string) => {
         'execution reverted: Amount exceeds available fund': 'Insufficient liquidity',
     }
 
-    return staticMessageMap[oMessage] ?? `Unknown Error: ${oMessage}`;
+    return staticMessageMap[oMessage] ?? oMessage;
 }

@@ -24,6 +24,10 @@ export const parseContractError = (oMessage: string) => {
         'execution reverted: Cap exceeded': 'Trolls have been sold out',
         'execution reverted: No oracle found': 'No Oracle found',
         'execution reverted: Amount exceeds available fund': 'Insufficient liquidity',
+        'execution reverted: backerCoin can\'t be a null address': 'BackerCoin can\'t be a null address',
+        'execution reverted: price can\'t be zero': 'Price can\'t be zero',
+        'execution reverted: mintingFee can\'t exceed 1': 'MintingFee can\'t exceed 1',
+        'execution reverted: redemptionFee can\'t exceed 1': 'RedemptionFee can\'t exceed 1'
     }
 
     return staticMessageMap[oMessage] ?? oMessage;

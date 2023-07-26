@@ -48,6 +48,10 @@ define("@scom/scom-tx-status-modal/store/error.ts", ["require", "exports"], func
             'execution reverted: Cap exceeded': 'Trolls have been sold out',
             'execution reverted: No oracle found': 'No Oracle found',
             'execution reverted: Amount exceeds available fund': 'Insufficient liquidity',
+            'execution reverted: backerCoin can\'t be a null address': 'BackerCoin can\'t be a null address',
+            'execution reverted: price can\'t be zero': 'Price can\'t be zero',
+            'execution reverted: mintingFee can\'t exceed 1': 'MintingFee can\'t exceed 1',
+            'execution reverted: redemptionFee can\'t exceed 1': 'RedemptionFee can\'t exceed 1'
         };
         return (_a = staticMessageMap[oMessage]) !== null && _a !== void 0 ? _a : oMessage;
     };
@@ -260,7 +264,7 @@ define("@scom/scom-tx-status-modal", ["require", "exports", "@ijstech/components
                     mainSection.appendChild(contentSection);
                     const contentLabel = await components_3.Label.create({
                         caption: this.convertContentToMsg(),
-                        wordBreak: 'break-all',
+                        wordBreak: 'break-word',
                         margin: { top: 2, bottom: 2 }
                     });
                     contentSection.appendChild(contentLabel);
@@ -314,7 +318,7 @@ define("@scom/scom-tx-status-modal", ["require", "exports", "@ijstech/components
                     const contentLabel = await components_3.Label.create({
                         caption: this.convertContentToMsg(),
                         margin: { bottom: 16 },
-                        wordBreak: 'break-all'
+                        wordBreak: 'break-word'
                     });
                     section.appendChild(contentLabel);
                     mainSection.appendChild(section);
@@ -333,12 +337,17 @@ define("@scom/scom-tx-status-modal", ["require", "exports", "@ijstech/components
                 this.mainContent.appendChild(mainSection);
             };
             this.convertContentToMsg = () => {
-                if (this.message.status !== 'error' || typeof this.message.content === 'string')
-                    return this.message.content || '';
-                if (this.message.content.message && this.message.content.message.includes('Internal JSON-RPC error.')) {
-                    this.message.content.message = JSON.parse(this.message.content.message.replace('Internal JSON-RPC error.\n', '')).message;
+                try {
+                    if (this.message.status !== 'error' || typeof this.message.content === 'string')
+                        return this.message.content || '';
+                    if (this.message.content.message && this.message.content.message.includes('Internal JSON-RPC error.')) {
+                        this.message.content.message = JSON.parse(this.message.content.message.replace('Internal JSON-RPC error.\n', '')).message;
+                    }
+                    return (0, index_1.parseContractError)(this.message.content.message);
                 }
-                return (0, index_1.parseContractError)(this.message.content.message);
+                catch (_a) {
+                    return 'Unknow Error';
+                }
             };
         }
         init() {

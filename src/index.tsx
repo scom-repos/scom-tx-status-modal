@@ -157,7 +157,7 @@ export default class ScomTxStatusModal extends Module {
 
       const contentLabel = await Label.create({
         caption: this.convertContentToMsg(),
-        wordBreak: 'break-all',
+        wordBreak: 'break-word',
         margin: { top: 2, bottom: 2 }
       });
       contentSection.appendChild(contentLabel);
@@ -217,7 +217,7 @@ export default class ScomTxStatusModal extends Module {
       const contentLabel = await Label.create({
         caption: this.convertContentToMsg(),
         margin: { bottom: 16 },
-        wordBreak: 'break-all'
+        wordBreak: 'break-word'
       });
       section.appendChild(contentLabel);
       mainSection.appendChild(section);
@@ -238,13 +238,16 @@ export default class ScomTxStatusModal extends Module {
   }
 
   private convertContentToMsg = () => {
-    if (this.message.status !== 'error' || typeof this.message.content === 'string') return this.message.content as string || '';
+    try {
+      if (this.message.status !== 'error' || typeof this.message.content === 'string') return this.message.content as string || '';
 
-    if (this.message.content.message && this.message.content.message.includes('Internal JSON-RPC error.')) {
-      this.message.content.message = JSON.parse(this.message.content.message.replace('Internal JSON-RPC error.\n', '')).message;
+      if (this.message.content.message && this.message.content.message.includes('Internal JSON-RPC error.')) {
+        this.message.content.message = JSON.parse(this.message.content.message.replace('Internal JSON-RPC error.\n', '')).message;
+      }
+      return parseContractError(this.message.content.message);
+    } catch {
+      return 'Unknow Error';
     }
-
-    return parseContractError(this.message.content.message);
   }
 
   init() {

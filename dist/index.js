@@ -86,7 +86,7 @@ define("@scom/scom-tx-status-modal/store/index.ts", ["require", "exports", "@sco
     exports.viewOnExplorerByTxHash = viewOnExplorerByTxHash;
     Object.defineProperty(exports, "parseContractError", { enumerable: true, get: function () { return error_1.parseContractError; } });
 });
-define("@scom/scom-tx-status-modal/index.css.ts", ["require", "exports", "@ijstech/components", "@scom/scom-tx-status-modal/assets.ts"], function (require, exports, components_2, assets_1) {
+define("@scom/scom-tx-status-modal/index.css.ts", ["require", "exports", "@ijstech/components"], function (require, exports, components_2) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     const Theme = components_2.Styles.Theme.ThemeVars;
@@ -132,7 +132,6 @@ define("@scom/scom-tx-status-modal/index.css.ts", ["require", "exports", "@ijste
             },
             '.btn-os': {
                 background: 'transparent linear-gradient(90deg, #AC1D78 0%, #E04862 100%) 0% 0% no-repeat padding-box',
-                fontFamily: 'Raleway Bold',
                 fontSize: '1rem',
                 fontWeight: 'bold',
                 color: '#fff'
@@ -140,35 +139,8 @@ define("@scom/scom-tx-status-modal/index.css.ts", ["require", "exports", "@ijste
             }
         }
     });
-    components_2.Styles.fontFace({
-        fontFamily: "Raleway Regular",
-        src: `url("${assets_1.default.fullPath('fonts/raleway/Raleway-Regular.ttf')}") format("truetype")`,
-        fontWeight: 'nomal',
-        fontStyle: 'normal'
-    });
-    components_2.Styles.fontFace({
-        fontFamily: "Raleway Bold",
-        src: `url("${assets_1.default.fullPath('fonts/raleway/Raleway-Bold.ttf')}") format("truetype")`,
-        fontWeight: 'bold',
-        fontStyle: 'normal'
-    });
-    components_2.Styles.fontFace({
-        fontFamily: "Raleway Light",
-        src: `url("${assets_1.default.fullPath('fonts/raleway/Raleway-Light.ttf')}") format("truetype")`,
-        fontStyle: 'normal'
-    });
-    components_2.Styles.fontFace({
-        fontFamily: "Raleway Medium",
-        src: `url("${assets_1.default.fullPath('fonts/raleway/Raleway-Medium.ttf')}") format("truetype")`,
-        fontStyle: 'normal'
-    });
-    components_2.Styles.fontFace({
-        fontFamily: "Raleway SemiBold",
-        src: `url("${assets_1.default.fullPath('fonts/raleway/Raleway-SemiBold.ttf')}") format("truetype")`,
-        fontStyle: 'normal'
-    });
 });
-define("@scom/scom-tx-status-modal", ["require", "exports", "@ijstech/components", "@scom/scom-tx-status-modal/assets.ts", "@scom/scom-tx-status-modal/store/index.ts", "@scom/scom-tx-status-modal/index.css.ts", "@ijstech/eth-wallet"], function (require, exports, components_3, assets_2, index_1, index_css_1, eth_wallet_1) {
+define("@scom/scom-tx-status-modal", ["require", "exports", "@ijstech/components", "@scom/scom-tx-status-modal/assets.ts", "@scom/scom-tx-status-modal/store/index.ts", "@scom/scom-tx-status-modal/index.css.ts", "@ijstech/eth-wallet"], function (require, exports, components_3, assets_1, index_1, index_css_1, eth_wallet_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     let ScomTxStatusModal = class ScomTxStatusModal extends components_3.Module {
@@ -230,7 +202,7 @@ define("@scom/scom-tx-status-modal", ["require", "exports", "@ijstech/components
                     const loading = (this.$render("i-panel", { height: 100 },
                         this.$render("i-vstack", { id: "loadingElm", class: "i-loading-overlay", height: "100%", background: { color: 'transparent' } },
                             this.$render("i-vstack", { class: "i-loading-spinner", horizontalAlignment: "center", verticalAlignment: "center" },
-                                this.$render("i-icon", { class: "i-loading-spinner_icon", image: { url: assets_2.default.fullPath('img/loading.svg'), width: 24, height: 24 } }),
+                                this.$render("i-icon", { class: "i-loading-spinner_icon", image: { url: assets_1.default.fullPath('img/loading.svg'), width: 24, height: 24 } }),
                                 this.$render("i-label", { caption: "Loading...", font: { color: '#FD4A4C' }, class: "i-loading-spinner_text" })))));
                     mainSection.appendChild(loading);
                     const section = new components_3.VStack();
@@ -252,7 +224,7 @@ define("@scom/scom-tx-status-modal", ["require", "exports", "@ijstech/components
                 else if (this.message.status === 'success') {
                     const image = await components_3.Image.create({
                         width: '50px',
-                        url: assets_2.default.fullPath('img/success-icon.svg'),
+                        url: assets_1.default.fullPath('img/success-icon.svg'),
                         display: 'inline-block',
                         margin: { bottom: 16 }
                     });
@@ -303,7 +275,7 @@ define("@scom/scom-tx-status-modal", ["require", "exports", "@ijstech/components
                 else {
                     const image = await components_3.Image.create({
                         width: '50px',
-                        url: assets_2.default.fullPath('img/error-icon.png'),
+                        url: assets_1.default.fullPath('img/error-icon.png'),
                         display: 'inline-block',
                         margin: { bottom: 16 }
                     });

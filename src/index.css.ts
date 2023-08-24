@@ -1,6 +1,5 @@
 import { Styles } from '@ijstech/components';
 const Theme = Styles.Theme.ThemeVars;
-import Assets from './assets';
 
 export default Styles.style({
   textAlign: 'center',
@@ -44,43 +43,10 @@ export default Styles.style({
     },
     '.btn-os': {
       background: 'transparent linear-gradient(90deg, #AC1D78 0%, #E04862 100%) 0% 0% no-repeat padding-box',
-      fontFamily: 'Raleway Bold',
       fontSize: '1rem',
       fontWeight: 'bold',
       color: '#fff'
       // color: Theme.colors.primary.contrastText
     }
   }
-})
-
-Styles.fontFace({
-  fontFamily: "Raleway Regular",
-  src: `url("${Assets.fullPath('fonts/raleway/Raleway-Regular.ttf')}") format("truetype")`,
-  fontWeight: 'nomal',
-  fontStyle: 'normal'
-})
-
-Styles.fontFace({
-  fontFamily: "Raleway Bold",
-  src: `url("${Assets.fullPath('fonts/raleway/Raleway-Bold.ttf')}") format("truetype")`,
-  fontWeight: 'bold',
-  fontStyle: 'normal'
-})
-
-Styles.fontFace({
-  fontFamily: "Raleway Light",
-  src: `url("${Assets.fullPath('fonts/raleway/Raleway-Light.ttf')}") format("truetype")`,
-  fontStyle: 'normal'
-})
-
-Styles.fontFace({
-  fontFamily: "Raleway Medium",
-  src: `url("${Assets.fullPath('fonts/raleway/Raleway-Medium.ttf')}") format("truetype")`,
-  fontStyle: 'normal'
-})
-
-Styles.fontFace({
-  fontFamily: "Raleway SemiBold",
-  src: `url("${Assets.fullPath('fonts/raleway/Raleway-SemiBold.ttf')}") format("truetype")`,
-  fontStyle: 'normal'
 })

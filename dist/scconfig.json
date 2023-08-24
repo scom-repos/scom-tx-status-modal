@@ -1,0 +1,9 @@
+{
+    "name": "@scom/scom-tx-status-modal",
+    "type": "widget",
+    "version": "0.1.0",
+    "dependencies": [
+        "@ijstech/components",
+        "@ijstech/eth-wallet"
+    ]
+}

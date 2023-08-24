@@ -11,7 +11,6 @@ import {
   Image,
   VStack
 } from '@ijstech/components';
-import { } from '@ijstech/eth-contract';
 import Assets from './assets';
 import {
   parseContractError,

@@ -22,7 +22,10 @@ import { Wallet } from '@ijstech/eth-wallet';
 interface IMessage {
   status: 'warning' | 'success' | 'error',
   content?: string | {
-    message: string
+    message: string,
+    data?: {
+      message: string
+    }
   },
   txtHash?: string,
   customRedirect?: {
@@ -239,7 +242,15 @@ export default class ScomTxStatusModal extends Module {
   private convertContentToMsg = () => {
     try {
       if (this.message.status !== 'error' || typeof this.message.content === 'string') return this.message.content as string || '';
-
+      if (this.message.content.data?.message) {
+        const dataMessage = this.message.content.data.message;
+        if (dataMessage.includes('insufficient funds for gas * price + value')) {
+          return 'Not enough gas to process transaction';
+        }
+        if (typeof dataMessage === 'string') {
+          return dataMessage;
+        }
+      }
       if (this.message.content.message && this.message.content.message.includes('Internal JSON-RPC error.')) {
         this.message.content.message = JSON.parse(this.message.content.message.replace('Internal JSON-RPC error.\n', '')).message;
       }

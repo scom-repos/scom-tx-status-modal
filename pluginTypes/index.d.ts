@@ -27,6 +27,9 @@ declare module "@scom/scom-tx-status-modal" {
         status: 'warning' | 'success' | 'error';
         content?: string | {
             message: string;
+            data?: {
+                message: string;
+            };
         };
         txtHash?: string;
         customRedirect?: {

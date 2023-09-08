@@ -309,15 +309,25 @@ define("@scom/scom-tx-status-modal", ["require", "exports", "@ijstech/components
                 this.mainContent.appendChild(mainSection);
             };
             this.convertContentToMsg = () => {
+                var _a;
                 try {
                     if (this.message.status !== 'error' || typeof this.message.content === 'string')
                         return this.message.content || '';
+                    if ((_a = this.message.content.data) === null || _a === void 0 ? void 0 : _a.message) {
+                        const dataMessage = this.message.content.data.message;
+                        if (dataMessage.includes('insufficient funds for gas * price + value')) {
+                            return 'Not enough gas to process transaction';
+                        }
+                        if (typeof dataMessage === 'string') {
+                            return dataMessage;
+                        }
+                    }
                     if (this.message.content.message && this.message.content.message.includes('Internal JSON-RPC error.')) {
                         this.message.content.message = JSON.parse(this.message.content.message.replace('Internal JSON-RPC error.\n', '')).message;
                     }
                     return (0, index_1.parseContractError)(this.message.content.message);
                 }
-                catch (_a) {
+                catch (_b) {
                     return 'Unknow Error';
                 }
             };

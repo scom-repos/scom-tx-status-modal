@@ -32,6 +32,7 @@ declare module "@scom/scom-tx-status-modal" {
             };
         };
         txtHash?: string;
+        exMessage?: string;
         customRedirect?: {
             url: string;
             params: any;

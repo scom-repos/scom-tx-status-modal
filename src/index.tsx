@@ -28,6 +28,7 @@ interface IMessage {
     }
   },
   txtHash?: string,
+  exMessage?: string,
   customRedirect?: {
     url: string,
     params: any
@@ -130,7 +131,8 @@ export default class ScomTxStatusModal extends Module {
       const section = new VStack();
       section.margin = { bottom: 20 };
       const captionList = ['Waiting For Confirmation', this.convertContentToMsg(), 'Confirm this transaction in your wallet'];
-      const classList = ['waiting-txt mb-1', 'mb-1', 'confirm-txt'];
+      if (this.message.exMessage) captionList.push(this.message.exMessage);
+      const classList = ['waiting-txt mb-1', 'mb-1', 'confirm-txt', 'confirm-txt'];
       for (let i = 0; i < captionList.length; i++) {
         const caption = captionList[i];
         const label = await Label.create({ caption });

@@ -22,7 +22,6 @@ define("@scom/scom-tx-status-modal/store/error.ts", ["require", "exports"], func
     exports.parseContractError = void 0;
     ///<amd-module name='@scom/scom-tx-status-modal/store/error.ts'/> 
     const parseContractError = (oMessage) => {
-        var _a;
         const staticMessageMap = {
             'execution reverted: OAXDEX: K': 'x * y = k Violated',
             'execution reverted: OAXDEX: FORBIDDEN': 'Forbidden',
@@ -53,7 +52,7 @@ define("@scom/scom-tx-status-modal/store/error.ts", ["require", "exports"], func
             'execution reverted: mintingFee can\'t exceed 1': 'MintingFee can\'t exceed 1',
             'execution reverted: redemptionFee can\'t exceed 1': 'RedemptionFee can\'t exceed 1'
         };
-        return (_a = staticMessageMap[oMessage]) !== null && _a !== void 0 ? _a : oMessage;
+        return staticMessageMap[oMessage] ?? oMessage;
     };
     exports.parseContractError = parseContractError;
 });
@@ -174,8 +173,7 @@ define("@scom/scom-tx-status-modal", ["require", "exports", "@ijstech/components
                 this.confirmModal.visible = true;
             };
             this.onCloseRedirect = () => {
-                var _a;
-                const customRedirect = (_a = this.message) === null || _a === void 0 ? void 0 : _a.customRedirect;
+                const customRedirect = this.message?.customRedirect;
                 if (customRedirect && customRedirect.url) {
                     this._message.customRedirect = null;
                     if (customRedirect.params) {
@@ -311,11 +309,10 @@ define("@scom/scom-tx-status-modal", ["require", "exports", "@ijstech/components
                 this.mainContent.appendChild(mainSection);
             };
             this.convertContentToMsg = () => {
-                var _a;
                 try {
                     if (this.message.status !== 'error' || typeof this.message.content === 'string')
                         return this.message.content || '';
-                    if ((_a = this.message.content.data) === null || _a === void 0 ? void 0 : _a.message) {
+                    if (this.message.content.data?.message) {
                         const dataMessage = this.message.content.data.message;
                         if (dataMessage.includes('insufficient funds for gas * price + value')) {
                             return 'Not enough gas to process transaction';
@@ -329,7 +326,7 @@ define("@scom/scom-tx-status-modal", ["require", "exports", "@ijstech/components
                     }
                     return (0, index_1.parseContractError)(this.message.content.message);
                 }
-                catch (_b) {
+                catch {
                     return 'Unknow Error';
                 }
             };

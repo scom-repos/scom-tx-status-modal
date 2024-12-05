@@ -18,6 +18,7 @@ import {
 } from './store/index';
 import statusModalStyles from './index.css';
 import { Wallet } from '@ijstech/eth-wallet';
+import translations from './translations.json';
 
 interface IMessage {
   status: 'warning' | 'success' | 'error',
@@ -115,14 +116,14 @@ export default class ScomTxStatusModal extends Module {
     });
     if (this.message.status === 'warning') {
       const loading = (
-        <i-panel height={100}>
-          <i-vstack id="loadingElm" class="i-loading-overlay" height="100%" background={{ color: 'transparent' }}>
+        <i-panel height={100} width={'100%'}>
+          <i-vstack id="loadingElm" class="i-loading-overlay" height="100%" background={{ color: 'transparent!important' }}>
             <i-vstack class="i-loading-spinner" horizontalAlignment="center" verticalAlignment="center">
               <i-icon
                 class="i-loading-spinner_icon"
                 image={{ url: Assets.fullPath('img/loading.svg'), width: 24, height: 24 }}
               />
-              <i-label caption="Loading..." font={{ color: '#FD4A4C' }} class="i-loading-spinner_text"></i-label>
+              <i-label caption="$loading" font={{ color: '#FD4A4C' }} class="i-loading-spinner_text" stack={{shrink: '0'}}></i-label>
             </i-vstack>
           </i-vstack>
         </i-panel>
@@ -130,17 +131,16 @@ export default class ScomTxStatusModal extends Module {
       mainSection.appendChild(loading);
       const section = new VStack();
       section.margin = { bottom: 20 };
-      const captionList = ['Waiting For Confirmation', this.convertContentToMsg(), 'Confirm this transaction in your wallet'];
+      const captionList = ['$waiting_for_confirmation', this.convertContentToMsg(), '$confirm_this_transaction_in_your_wallet'];
       if (this.message.exMessage) captionList.push(this.message.exMessage);
       const classList = ['waiting-txt mb-1', 'mb-1', 'confirm-txt', 'confirm-txt'];
       for (let i = 0; i < captionList.length; i++) {
         const caption = captionList[i];
-        const label = await Label.create({ caption });
+        const label = new Label(section, { caption });
         if (classList[i]) {
           const classes = classList[i].split(' ');
           classes.forEach(className => label.classList.add(className));
         }
-        section.appendChild(label);
       };
       mainSection.appendChild(section);
     } else if (this.message.status === 'success') {
@@ -152,19 +152,17 @@ export default class ScomTxStatusModal extends Module {
       });
       mainSection.appendChild(image);
 
-      const label = await Label.create({ caption: 'Transaction Submitted' });
+      const label = new Label(mainSection, { caption: '$transaction_submitted' });
       label.classList.add('waiting-txt');
-      mainSection.appendChild(label);
 
       const contentSection = await Panel.create();
       mainSection.appendChild(contentSection);
 
-      const contentLabel = await Label.create({
+      const contentLabel = new Label(contentSection, {
         caption: this.convertContentToMsg(),
         wordBreak: 'break-word',
         margin: { top: 2, bottom: 2 }
       });
-      contentSection.appendChild(contentLabel);
 
       if (this.message.txtHash) {
         const section = new VStack();
@@ -180,22 +178,20 @@ export default class ScomTxStatusModal extends Module {
         });
         section.appendChild(label2);
 
-        const link = await Label.create({
-          caption: 'View on block explorer',
+        const link = new Label(section, {
+          caption: '$view_on_block_explorer',
           display: 'block'
         });
 
         link.onClick = () => this.buildLink();
         link.classList.add('red-link', 'pointer');
-        section.appendChild(link);
         contentSection.appendChild(section);
       }
 
       const button = new Button(mainSection, {
         width: '100%',
-        caption: 'Close',
+        caption: '$close',
         margin: { top: 16 },
-        // font: { color: Theme.colors.primary.contrastText }
         font: { color: '#fff' }
       });
       button.classList.add('btn-os');
@@ -210,27 +206,24 @@ export default class ScomTxStatusModal extends Module {
       });
       mainSection.appendChild(image);
 
-      const label = await Label.create({
-        caption: 'Transaction Rejected.',
+      const label = new Label(mainSection, {
+        caption: '$transaction_rejected',
         margin: { bottom: 16 }
       });
       label.classList.add('waiting-txt');
-      mainSection.appendChild(label);
 
       const section = await VStack.create();
-      const contentLabel = await Label.create({
+      const contentLabel = new Label(section, {
         caption: this.convertContentToMsg(),
         margin: { bottom: 16 },
         wordBreak: 'break-word'
       });
-      section.appendChild(contentLabel);
       mainSection.appendChild(section);
 
       const button = new Button(mainSection, {
         width: '100%',
-        caption: 'Cancel',
+        caption: '$cancel',
         margin: { top: 16 },
-        // font: { color: Theme.colors.primary.contrastText }
         font: { color: '#fff' }
       });
       button.classList.add('btn-os');
@@ -247,7 +240,7 @@ export default class ScomTxStatusModal extends Module {
       if (this.message.content.data?.message) {
         const dataMessage = this.message.content.data.message;
         if (dataMessage.includes('insufficient funds for gas * price + value')) {
-          return 'Not enough gas to process transaction';
+          return '$not_enough_gas_to_process_transaction';
         }
         if (typeof dataMessage === 'string') {
           return dataMessage;
@@ -258,11 +251,12 @@ export default class ScomTxStatusModal extends Module {
       }
       return parseContractError(this.message.content.message);
     } catch {
-      return 'Unknow Error';
+      return '$unknow_error';
     }
   }
 
   init() {
+    this.i18n.init({...translations});
     this.classList.add(statusModalStyles);
     super.init();
     this.confirmModal.onClose = () => {

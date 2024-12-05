@@ -139,7 +139,39 @@ define("@scom/scom-tx-status-modal/index.css.ts", ["require", "exports", "@ijste
         }
     });
 });
-define("@scom/scom-tx-status-modal", ["require", "exports", "@ijstech/components", "@scom/scom-tx-status-modal/assets.ts", "@scom/scom-tx-status-modal/store/index.ts", "@scom/scom-tx-status-modal/index.css.ts", "@ijstech/eth-wallet"], function (require, exports, components_3, assets_1, index_1, index_css_1, eth_wallet_1) {
+define("@scom/scom-tx-status-modal/translations.json.ts", ["require", "exports"], function (require, exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    ///<amd-module name='@scom/scom-tx-status-modal/translations.json.ts'/> 
+    exports.default = {
+        "en": {
+            "waiting_for_confirmation": "Waiting For Confirmation",
+            "confirm_this_transaction_in_your_wallet": "Confirm this transaction in your wallet",
+            "loading": "loading...",
+            "view_on_block_explorer": "View on block explorer",
+            "transaction_submitted": "Transaction Submitted",
+            "close": "Close",
+            "cancel": "Cancel",
+            "not_enough_gas_to_process_transaction": "Not enough gas to process transaction",
+            "unknow_error": "Unknow Error",
+            "transaction_rejected": "Transaction Rejected.",
+        },
+        "zh-hant": {},
+        "vi": {
+            "waiting_for_confirmation": "Đang chờ xác nhận",
+            "confirm_this_transaction_in_your_wallet": "Xác nhận giao dịch này trong ví của bạn",
+            "loading": "Đang tải...",
+            "view_on_block_explorer": "Xem trên trình khám phá khối",
+            "transaction_submitted": "Giao dịch đã được gửi",
+            "close": "Đóng",
+            "cancel": "Hủy",
+            "not_enough_gas_to_process_transaction": "Không đủ khả năng để xử lý giao dịch",
+            "unknow_error": "Lỗi không xác định",
+            "transaction_rejected": "Giao dịch đã bị từ chối"
+        }
+    };
+});
+define("@scom/scom-tx-status-modal", ["require", "exports", "@ijstech/components", "@scom/scom-tx-status-modal/assets.ts", "@scom/scom-tx-status-modal/store/index.ts", "@scom/scom-tx-status-modal/index.css.ts", "@ijstech/eth-wallet", "@scom/scom-tx-status-modal/translations.json.ts"], function (require, exports, components_3, assets_1, index_1, index_css_1, eth_wallet_1, translations_json_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     let ScomTxStatusModal = class ScomTxStatusModal extends components_3.Module {
@@ -197,26 +229,25 @@ define("@scom/scom-tx-status-modal", ["require", "exports", "@ijstech/components
                     horizontalAlignment: 'center'
                 });
                 if (this.message.status === 'warning') {
-                    const loading = (this.$render("i-panel", { height: 100 },
-                        this.$render("i-vstack", { id: "loadingElm", class: "i-loading-overlay", height: "100%", background: { color: 'transparent' } },
+                    const loading = (this.$render("i-panel", { height: 100, width: '100%' },
+                        this.$render("i-vstack", { id: "loadingElm", class: "i-loading-overlay", height: "100%", background: { color: 'transparent!important' } },
                             this.$render("i-vstack", { class: "i-loading-spinner", horizontalAlignment: "center", verticalAlignment: "center" },
                                 this.$render("i-icon", { class: "i-loading-spinner_icon", image: { url: assets_1.default.fullPath('img/loading.svg'), width: 24, height: 24 } }),
-                                this.$render("i-label", { caption: "Loading...", font: { color: '#FD4A4C' }, class: "i-loading-spinner_text" })))));
+                                this.$render("i-label", { caption: "$loading", font: { color: '#FD4A4C' }, class: "i-loading-spinner_text", stack: { shrink: '0' } })))));
                     mainSection.appendChild(loading);
                     const section = new components_3.VStack();
                     section.margin = { bottom: 20 };
-                    const captionList = ['Waiting For Confirmation', this.convertContentToMsg(), 'Confirm this transaction in your wallet'];
+                    const captionList = ['$waiting_for_confirmation', this.convertContentToMsg(), '$confirm_this_transaction_in_your_wallet'];
                     if (this.message.exMessage)
                         captionList.push(this.message.exMessage);
                     const classList = ['waiting-txt mb-1', 'mb-1', 'confirm-txt', 'confirm-txt'];
                     for (let i = 0; i < captionList.length; i++) {
                         const caption = captionList[i];
-                        const label = await components_3.Label.create({ caption });
+                        const label = new components_3.Label(section, { caption });
                         if (classList[i]) {
                             const classes = classList[i].split(' ');
                             classes.forEach(className => label.classList.add(className));
                         }
-                        section.appendChild(label);
                     }
                     ;
                     mainSection.appendChild(section);
@@ -229,17 +260,15 @@ define("@scom/scom-tx-status-modal", ["require", "exports", "@ijstech/components
                         margin: { bottom: 16 }
                     });
                     mainSection.appendChild(image);
-                    const label = await components_3.Label.create({ caption: 'Transaction Submitted' });
+                    const label = new components_3.Label(mainSection, { caption: '$transaction_submitted' });
                     label.classList.add('waiting-txt');
-                    mainSection.appendChild(label);
                     const contentSection = await components_3.Panel.create();
                     mainSection.appendChild(contentSection);
-                    const contentLabel = await components_3.Label.create({
+                    const contentLabel = new components_3.Label(contentSection, {
                         caption: this.convertContentToMsg(),
                         wordBreak: 'break-word',
                         margin: { top: 2, bottom: 2 }
                     });
-                    contentSection.appendChild(contentLabel);
                     if (this.message.txtHash) {
                         const section = new components_3.VStack();
                         const label1 = await components_3.Label.create({
@@ -252,20 +281,18 @@ define("@scom/scom-tx-status-modal", ["require", "exports", "@ijstech/components
                             margin: { bottom: 16 }
                         });
                         section.appendChild(label2);
-                        const link = await components_3.Label.create({
-                            caption: 'View on block explorer',
+                        const link = new components_3.Label(section, {
+                            caption: '$view_on_block_explorer',
                             display: 'block'
                         });
                         link.onClick = () => this.buildLink();
                         link.classList.add('red-link', 'pointer');
-                        section.appendChild(link);
                         contentSection.appendChild(section);
                     }
                     const button = new components_3.Button(mainSection, {
                         width: '100%',
-                        caption: 'Close',
+                        caption: '$close',
                         margin: { top: 16 },
-                        // font: { color: Theme.colors.primary.contrastText }
                         font: { color: '#fff' }
                     });
                     button.classList.add('btn-os');
@@ -280,25 +307,22 @@ define("@scom/scom-tx-status-modal", ["require", "exports", "@ijstech/components
                         margin: { bottom: 16 }
                     });
                     mainSection.appendChild(image);
-                    const label = await components_3.Label.create({
-                        caption: 'Transaction Rejected.',
+                    const label = new components_3.Label(mainSection, {
+                        caption: '$transaction_rejected',
                         margin: { bottom: 16 }
                     });
                     label.classList.add('waiting-txt');
-                    mainSection.appendChild(label);
                     const section = await components_3.VStack.create();
-                    const contentLabel = await components_3.Label.create({
+                    const contentLabel = new components_3.Label(section, {
                         caption: this.convertContentToMsg(),
                         margin: { bottom: 16 },
                         wordBreak: 'break-word'
                     });
-                    section.appendChild(contentLabel);
                     mainSection.appendChild(section);
                     const button = new components_3.Button(mainSection, {
                         width: '100%',
-                        caption: 'Cancel',
+                        caption: '$cancel',
                         margin: { top: 16 },
-                        // font: { color: Theme.colors.primary.contrastText }
                         font: { color: '#fff' }
                     });
                     button.classList.add('btn-os');
@@ -315,7 +339,7 @@ define("@scom/scom-tx-status-modal", ["require", "exports", "@ijstech/components
                     if (this.message.content.data?.message) {
                         const dataMessage = this.message.content.data.message;
                         if (dataMessage.includes('insufficient funds for gas * price + value')) {
-                            return 'Not enough gas to process transaction';
+                            return '$not_enough_gas_to_process_transaction';
                         }
                         if (typeof dataMessage === 'string') {
                             return dataMessage;
@@ -327,11 +351,12 @@ define("@scom/scom-tx-status-modal", ["require", "exports", "@ijstech/components
                     return (0, index_1.parseContractError)(this.message.content.message);
                 }
                 catch {
-                    return 'Unknow Error';
+                    return '$unknow_error';
                 }
             };
         }
         init() {
+            this.i18n.init({ ...translations_json_1.default });
             this.classList.add(index_css_1.default);
             super.init();
             this.confirmModal.onClose = () => {
